@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Subscribe = () => {
+const NewsletterBox = () => {
   const [email, setEmail] = useState("");
   const [showPopup, setShowPopup] = useState(false);
 
@@ -68,4 +68,4 @@ const Subscribe = () => {
   );
 };
 
-export default Subscribe;
+export default NewsletterBox;
