@@ -4,7 +4,7 @@ import { ShopContext } from '../context/ShopContext';
 import { assets } from '../assets/assets';
 
 const Navbar = () => {
-  const { getCartCount, user, logout } = useContext(ShopContext);
+  const { getCartCount, user, logout, setShowSearch } = useContext(ShopContext);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -16,9 +16,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50 w-full">
-      {/* Full-width container */}
       <div className="flex justify-between items-center w-full py-4">
-        
         {/* Logo */}
         <Link to="/" className="flex items-center px-4">
           <img src={assets.logo} alt="Shop Logo" className="h-10" />
@@ -41,10 +39,13 @@ const Navbar = () => {
 
         {/* Right Section */}
         <div className="flex items-center space-x-4 px-4">
-          {/* Search */}
-          <Link to="/collection" className="text-gray-700 hover:text-black transition-colors duration-200">
-            <img src={assets.search_icon} alt="Search" className="w-6 h-6" />
-          </Link>
+          {/* Search Icon */}
+          <img
+            src={assets.search_icon}
+            alt="Search"
+            className="w-6 h-6 cursor-pointer"
+            onClick={() => setShowSearch(prev => !prev)} // only toggle state
+          />
 
           {/* Cart */}
           <Link to="/cart" className="relative text-gray-700 hover:text-black transition-colors duration-200">
@@ -62,20 +63,10 @@ const Navbar = () => {
               <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center font-bold cursor-pointer">
                 {user.userName ? user.userName.charAt(0).toUpperCase() : "U"}
               </div>
-
-              {/* Dropdown */}
               <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg
                 opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200">
-                <Link
-                  to="/orders"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Orders
-                </Link>
-                <button
-                  onClick={logout}
-                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
+                <Link to="/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Orders</Link>
+                <button onClick={logout} className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                   Logout
                 </button>
               </div>
@@ -89,10 +80,7 @@ const Navbar = () => {
 
         {/* Mobile Menu Button */}
         <div className="md:hidden px-4">
-          <button
-            className="text-gray-700 hover:text-black focus:outline-none"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
+          <button className="text-gray-700 hover:text-black focus:outline-none" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                 d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"} />
@@ -105,31 +93,18 @@ const Navbar = () => {
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-200">
           {navLinks.map(link => (
-            <Link
-              key={link.name}
-              to={link.path}
-              className="block text-gray-700 hover:text-black px-4 py-2"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
+            <Link key={link.name} to={link.path} className="block text-gray-700 hover:text-black px-4 py-2"
+              onClick={() => setIsMobileMenuOpen(false)}>
               {link.name}
             </Link>
           ))}
           {user ? (
             <>
-              <Link to="/orders" className="block text-gray-700 hover:text-black px-4 py-2">
-                Orders
-              </Link>
-              <button
-                onClick={() => { logout(); setIsMobileMenuOpen(false); }}
-                className="w-full text-left text-gray-700 hover:text-black px-4 py-2"
-              >
-                Logout
-              </button>
+              <Link to="/orders" className="block text-gray-700 hover:text-black px-4 py-2">Orders</Link>
+              <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="w-full text-left text-gray-700 hover:text-black px-4 py-2">Logout</button>
             </>
           ) : (
-            <Link to="/login" className="block text-gray-700 hover:text-black px-4 py-2">
-              Login
-            </Link>
+            <Link to="/login" className="block text-gray-700 hover:text-black px-4 py-2">Login</Link>
           )}
         </div>
       )}

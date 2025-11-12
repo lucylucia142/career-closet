@@ -6,7 +6,6 @@ const ShopContextProvider = ({ children }) => {
   const currency = "R";
   const delivery_fee = 10;
 
-  // State
   const [products, setProducts] = useState([]);
   const [cartItems, setCartItems] = useState({});
   const [loading, setLoading] = useState(false);
@@ -25,23 +24,16 @@ const ShopContextProvider = ({ children }) => {
       if (!res.ok) throw new Error("Failed to fetch products");
       const data = await res.json();
 
-      // 🔹 Normalize each product → ensure arrays for images/sizes
-      const normalized = data.map((product) => {
-        const normalizedImage = Array.isArray(product.image)
+      const normalized = data.map((product) => ({
+        ...product,
+        image: Array.isArray(product.image)
           ? product.image
-          : [product.image].filter(Boolean);
-
-        const normalizedSizes =
+          : [product.image].filter(Boolean),
+        sizes:
           Array.isArray(product.sizes) && product.sizes.length > 0
             ? product.sizes
-            : ["S", "M", "L", "XL"];
-
-        return {
-          ...product,
-          image: normalizedImage,
-          sizes: normalizedSizes,
-        };
-      });
+            : ["S", "M", "L", "XL"],
+      }));
 
       setProducts(normalized);
     } catch (error) {
@@ -139,7 +131,7 @@ const ShopContextProvider = ({ children }) => {
         });
         if (!res.ok) throw new Error("Failed to add to cart");
       } catch (error) {
-        console.error("Failed to save cart to MongoDB:", error);
+        console.error("Failed to save cart to backend:", error);
         setCartError("Failed to update cart. Please try again.");
       }
     }
@@ -159,6 +151,7 @@ const ShopContextProvider = ({ children }) => {
     if (JSON.stringify(cartItems) === JSON.stringify(newCart)) return;
 
     setCartItems(newCart);
+
     if (isAuthenticated && user?._id) {
       try {
         if (quantity <= 0) {
@@ -182,7 +175,7 @@ const ShopContextProvider = ({ children }) => {
           if (!res.ok) throw new Error("Failed to update cart");
         }
       } catch (error) {
-        console.error("Failed to update cart in MongoDB:", error);
+        console.error("Failed to update cart in backend:", error);
         setCartError("Failed to update cart. Please try again.");
       }
     }
